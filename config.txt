@@ -1,0 +1,191 @@
+911 code-server 설치
+###################################################
+=========================1=========================
+curl -fsSL https://code-server.dev/install.sh | sh
+sudo systemctl enable --now code-server@$USER
+
+=========================2=========================
+vim /home/inexist0000/.config/code-server/config.yaml
+
+# in config.yaml
+
+	bind-addr: 0.0.0.0:80
+	auth: password
+	password: 
+	cert: false
+
+
+=========================3=========================
+sudo su
+cd /root/.config/code-server/
+vim ~/.config/code-server/config.yaml
+
+#in config.yaml (in root)
+
+        bind-addr: 0.0.0.0:80
+        auth: password
+        password:
+        cert: false
+
+exit
+
+=========================4=========================
+sudo code-server &
+
+###################################################
+
+
+
+
+
+911 code-server in docker
+###################################################
+sudo apt-get update
+sudo apt-get install docker.io
+sudo chmod 666 /var/run/docker.sock
+docker run --name code-server -p 80:8080 -v "$PWD:/home/coder/project" -e PASSWORD=soo codercom/code-server:latest
+
+###################################################
+
+
+
+
+
+911 docker in docker (make code-server 환경)
+###################################################
+docker run --name code-server -p 1024:8080 -v /var/run/docker.sock:/var/run/docker.sock -e PASSWORD=soo codercom/code-server:latest
+//기본 이미지로 만들고 안에서 코딩하다가
+
+docker commit -a "manja" -m "commit test" code-server commit_test:latest
+//저장해야겠을때 image 만든다. (나만의 code server 개발환경을 도커 이미지로 저장한것)
+
+docker run --name code-server -p 1024:8080 -v /var/run/docker.sock:/var/run/docker.sock -e PASSWORD=soo commit_test 
+//이미지를 어디서나 실행가능. 왼쪽의 도커 확장에서 컨테이너위에 마우스를 올리면 바인드와 네트워크 관계를 확인 가능.
+//도커컴에서 다운한거 호스트에서 실행불가 호스트에서 다운한거 도커컴에서 실행불가 
+
+//임시 file pwd
+        ./var/lib/docker/overlay2/365dcf75089f49e6b44d75bfbb2912398ac8956061a010718cc1513a4db4bfc6/diff/home/coder/findmeplz
+
+//컨테이너를 이미지화 했을 경우에는 이미지 내부에 저장되고 이를 접근할 수 없음.(접근은 가능할지몰라도 이름으로 찾기 불가)
+
+//dood
+//test
+        docker run hello-world 
+###################################################
+
+
+
+
+911 도커 이미지 백엔드 환경
+###################################################
+npm init-y 
+//프로젝트초기화
+
+npm i express
+//백엔드 프레임워크 구축
+
+index.js
+//백엔드 파일
+
+//도커파일 생성후 
+#dockerfile
+
+        FROM node:16-alpine
+
+        WORKDIR /app
+
+        COPY package-lock.json package.json ./
+
+        RUN npm ci 
+        #npm 실행시 package.json 에 명시된 파일들 다운로드함
+        COPY index.js .
+
+        ENTRYPOINT [ "node", "index.js" ]
+        #빈번히 실행되는거 밑으로 레이어
+
+//이미지 만들기
+        docker build -f dockerfile -t node .
+                        파일이름      제목 상대위치
+
+//내부 셸 접근 명령어 
+        docker exec -it 1e75b88f25cdb904fceb7aeb1a3d5ec9b24b049da9dfbc31def4158e20816d2b sh 
+
+docker run -d -p 8080:8080 node
+
+//근데 이러면 http://34.47.96.244/proxy/1024/proxy/8080/?folder=/home/coder 여기가 접속이됨
+//docker-demon 공유하므로 서버코드를 돌리는 도커의 도커이미지와 컨테이너들이 공유됨
+//docker-demon 을 공유하기 때문에 http://34.47.96.244/proxy/8080 에서 확인이 가능
+###################################################
+
+
+
+
+
+911 docker image upload in docker hub
+###################################################
+docker images
+
+docker login
+
+docker tag filename:tag shinyeonsoo/test:tag
+
+docker push shinyeonsoo/test:tag
+
+docker pull shinyeonsoo/test:tag
+###################################################
+
+
+
+911 git
+###################################################
+git init 
+git add filename                //기록할거 등록
+git config --global user.email "dusengody@postech.ac.kr"
+git config --global user.name "shinyeonsoo"
+git commit -m "comment"         //등록
+
+//이미 존재하는 원격저장소 삭제
+git remote rm origin
+//github 연결
+git remote add origin https://github.com/inexist0000/code
+//origin 이라는 이름으로 연결
+git push origin master
+                ^branch name[defult]
+
+git branch -M [되고싶은 branch name]
+git branch -m [현재 branch name] [바꾸고싶은 branch name]
+git branch //정보확인
+git branch addname //branch 추가
+git branch -d name //삭제 -D는 강제삭제
+git switch name //이동
+ git branch checkout [전환하고싶은 브랜치명]
+
+//파일이 일치해야 push 가능하므로
+//git pull origin [branch name] 
+//git pull 
+
+git 명령어들
+https://gin-girin-grim.tistory.com/10
+
+
+
+
+NOTE
+## git:latest 이미지에 lainyzine/ubunte:git 이름을 추가
+$ docker tag git:latest lainyzine/ubuntu:git
+
+## 기존 이미지 이름 삭제
+$ docker rmi git:latest
+
+find . -name "filename"
+
+$ docker pull lainyzine/ubuntu:git
+
+
+
+
+
+---------------------------------------------------
+###################################################
+=========================1=========================
+===================================================
