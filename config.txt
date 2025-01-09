@@ -185,6 +185,14 @@ https://gin-girin-grim.tistory.com/10
 tokens: ghp_SatH9MnAhuNhk1h4gfl7G30zPMXVbS36mivi
 
 
+
+
+
+
+
+
+
+
 NOTE
 ## git:latest 이미지에 lainyzine/ubunte:git 이름을 추가
 $ docker tag git:latest lainyzine/ubuntu:git
@@ -195,7 +203,7 @@ $ docker rmi git:latest
 find . -name "filename"
 
 $ docker pull lainyzine/ubuntu:git
-
+rm -rf .git
 
 
 
